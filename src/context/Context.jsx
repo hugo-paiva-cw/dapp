@@ -1,22 +1,28 @@
-import { useState } from "react";
+import { createContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
 // This imports our ABIs we'll use to interact with the contract
-import Greeter from "./artifacts/contracts/Greeter.sol/Greeter.json";
-import ABI from "./artifacts/contracts/BRLC_ABI.json";
-import "./App.css";
+import Greeter from "../artifacts/contracts/Greeter.sol/Greeter.json";
+import ABI from "../artifacts/contracts/BRLC_ABI.json";
 
-// Contracts addresses
-const greeterAddress = "0xed578BAd241455C0d57419659a3a6Eb9c770cC8d"; // Liquidity pool contract address
-const brlcContractAddress = "0xC6d1eFd908ef6B69dA0749600F553923C465c812";
+export const Context = createContext({});
 
-const provider = new ethers.providers.Web3Provider(window.ethereum);
-const signer = provider.getSigner();
+export const Provider = (props) => {
+  // Contracts addresses
+  const greeterAddress = "0xed578BAd241455C0d57419659a3a6Eb9c770cC8d"; // Liquidity pool contract address
+  const brlcContractAddress = "0xC6d1eFd908ef6B69dA0749600F553923C465c812";
 
-const vaultContract = new ethers.Contract(greeterAddress, Greeter.abi, signer);
-const BRLCcontract = new ethers.Contract(brlcContractAddress, ABI, signer);
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
 
-function App() {
+  const vaultContract = new ethers.Contract(
+    greeterAddress,
+    Greeter.abi,
+    signer
+  );
+  const BRLCcontract = new ethers.Contract(brlcContractAddress, ABI, signer);
+
   const [inputNumber, setInputNumber] = useState("");
   const [currentBalance, setCurrentBalance] = useState(0);
   const [currentAccount, setCurrentAccount] = useState("");
@@ -57,12 +63,36 @@ function App() {
     // }
   };
 
-  MetaMaskClientCheck();
+async function makeAWithdraw() {
+  if (!inputNumber) return;
+  const valueAssets = inputNumber * 10000;
+  if (typeof window.ethereum !== "undefined") {
+    try {
+      const data = await vaultContract.withdraw(
+        valueAssets,
+        currentAccount,
+        currentAccount
+      );
+      console.log("data: ", data);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  }
+}
 
-  async function approveAllowance() {
+async function getMaxWithdrawValue() {
+  const unitsInACent = 10000;
+  const maxWithdraw = await vaultContract.maxWithdraw(currentAccount);
+  const result = parseInt(maxWithdraw._hex, 16);
+  setCurrentBalance(result / unitsInACent);
+  console.log(result);
+  return result;
+}
+
+  async function approveAllowance(valueAssets) {
     const myWallet = currentAccount;
     const lpAddress = "0xed578BAd241455C0d57419659a3a6Eb9c770cC8d";
-    await BRLCcontract.approve(lpAddress, 100000);
+    await BRLCcontract.approve(lpAddress, valueAssets);
     const balance = await BRLCcontract.allowance(myWallet, lpAddress);
     console.log(parseInt(balance._hex, 16));
   }
@@ -71,7 +101,7 @@ function App() {
     if (!inputNumber) return;
     const valueAssets = inputNumber * 10000;
     if (typeof window.ethereum !== "undefined") {
-      await approveAllowance();
+      await approveAllowance(valueAssets);
       try {
         const data = await vaultContract.deposit(valueAssets, currentAccount);
         console.log("data: ", data);
@@ -138,25 +168,29 @@ function App() {
     }
   }
 
-  return (
-    <div className="App">
-      <div className="App-header">
-        <div>Meu balanço atual é: {currentBalance} centavos</div>
-        <div>Minha conta é: {currentAccount}</div>
-        <button onClick={getMaxWithdrawValue}>Ver saldo</button>
-        <button onClick={onClickConnect}>Conectar</button>
-        <button onClick={addCToken}>Adicionar cToken a MetaMask</button>
-        <button onClick={makeADeposit}>Depositar</button>
-        <button onClick={makeAWithdraw}>Sacar Tudo</button>
-        <input
-          type="number"
-          onChange={(e) => setInputNumber(e.target.value)}
-          value={inputNumber}
-          placeholder="Digite quantos centavos"
-        ></input>
-      </div>
-    </div>
-  );
-}
+  const navigate = useNavigate();
 
-export default App;
+  return (
+    <Context.Provider
+      value={{
+        navigate,
+        onClickConnect,
+        MetaMaskClientCheck,
+        makeADeposit,
+        makeAWithdraw,
+        getMaxWithdrawValue,
+        approveAllowance,
+        addCToken,
+        isMetaMaskInstalled,
+        inputNumber,
+        setInputNumber,
+        currentBalance,
+        setCurrentBalance,
+        currentAccount,
+        setCurrentAccount,
+      }}
+    >
+      {props.children}
+    </Context.Provider>
+  );
+};
