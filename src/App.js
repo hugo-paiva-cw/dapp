@@ -1,19 +1,24 @@
 import { useState } from "react";
 import { ethers } from "ethers";
 
-// This imports our ABI we'll use to interact with the contract
+// This imports our ABIs we'll use to interact with the contract
 import Greeter from "./artifacts/contracts/Greeter.sol/Greeter.json";
+import ABI from "./artifacts/contracts/brlcABI.json";
 import "./App.css";
 
 const greeterAddress = "0xed578BAd241455C0d57419659a3a6Eb9c770cC8d";
+const brlcContractAddress = "0xC6d1eFd908ef6B69dA0749600F553923C465c812"; // Liquidity pool contract address
+
+const provider = new ethers.providers.Web3Provider(window.ethereum);
+const signer = provider.getSigner();
+
+const vaultContract = new ethers.Contract(greeterAddress, Greeter.abi, signer);
+const BRLCcontract = new ethers.Contract(brlcContractAddress, ABI, signer);
 
 function App() {
   const [message, setMessage] = useState("");
   const [currentBalance, setCurrentBalance] = useState(0);
-
-  async function requestAccount() {
-    await window.ethereum.request({ method: "eth_requestAccounts" });
-  }
+  const [currentAccount, setCurrentAccount] = useState("");
 
   const isMetaMaskInstalled = () => {
     const { ethereum } = window;
@@ -26,15 +31,17 @@ function App() {
   //   onboarding.startOnboarding();
   // };
 
-  const onClickConnect = async () => {
+  async function onClickConnect() {
     try {
-      await window.ethereum.request({ method: "eth_requestAccounts" });
-      console.log("oi");
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const res = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      setCurrentAccount(res[0]);
+      console.log(currentAccount);
     } catch (error) {
       console.error(error);
     }
-  };
+  }
 
   const MetaMaskClientCheck = () => {
     // if (!isMetaMaskInstalled()) {
@@ -49,77 +56,45 @@ function App() {
     // }
   };
 
-  // getApproval.addEventListener("click", async () => {
-  //   const result = ethereum.request({ method: "approve" });
-  // });
-
   // getAccountsButton.addEventListener("click", async () => {
   //   const accounts = await ethereum.request({ method: "eth_accounts" });
   //   getAccountsResult.innerHTML =
   //     accounts[0] || "Não foi capaz de obter as contas";
   // });
 
-  MetaMaskClientCheck();
+  // MetaMaskClientCheck();
+
+  async function approveAllowance() {
+    const myWallet = currentAccount;
+    const lpAddress = "0xed578BAd241455C0d57419659a3a6Eb9c770cC8d";
+    await BRLCcontract.approve(lpAddress, 100000);
+    const balance = await BRLCcontract.allowance(myWallet, lpAddress);
+    console.log(parseInt(balance._hex, 16));
+  }
 
   async function makeADeposit() {
-    // If MetaMask exists
     if (!message) return;
     const valueAssets = message * 10000;
     if (typeof window.ethereum !== "undefined") {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(greeterAddress, Greeter.abi, signer);
+      await approveAllowance();
       try {
-        // Call Greeter.greet() and display current greeting in `console`
-        /* 
-      function greet() public view returns (string memory) {
-        return greeting;
-      }
-    */
-        // const data = await contract.totalSupply();
-        const data = await contract.deposit(
-          valueAssets,
-          "0x0D50AB2b552A2D2e6cdaFd367e6e78f392A2f06F"
-        );
+        const data = await vaultContract.deposit(valueAssets, currentAccount);
         console.log("data: ", data);
       } catch (error) {
         console.log("Error: ", error);
       }
     }
   }
-  async function doNothingAndAddToken() {
-    if (!message) return;
 
-    if (typeof window.ethereum !== "undefined") {
-      await requestAccount();
-
-      // If Metamask exists
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-
-      const contract = new ethers.Contract(greeterAddress, Greeter.abi, signer);
-      // const transaction = await contract.makeADeposit(message);
-
-      // setMessage("");
-      // await transaction.wait();
-      // doNothingAndAddToken();
-      addCToken();
-    }
-  }
   async function makeAWithdraw() {
+    if (!message) return;
+    const valueAssets = message * 10000;
     if (typeof window.ethereum !== "undefined") {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(greeterAddress, Greeter.abi, signer);
       try {
-        // const data = await contract.totalSupply();
-        const maxWithdraw = await contract.maxWithdraw(
-          "0x0D50AB2b552A2D2e6cdaFd367e6e78f392A2f06F"
-        );
-        const data = await contract.withdraw(
-          maxWithdraw,
-          "0x0D50AB2b552A2D2e6cdaFd367e6e78f392A2f06F",
-          "0x0D50AB2b552A2D2e6cdaFd367e6e78f392A2f06F"
+        const data = await vaultContract.withdraw(
+          valueAssets,
+          currentAccount,
+          currentAccount
         );
         console.log("data: ", data);
       } catch (error) {
@@ -130,12 +105,7 @@ function App() {
 
   async function getMaxWithdrawValue() {
     const unitsInACent = 10000;
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(greeterAddress, Greeter.abi, signer);
-    const maxWithdraw = await contract.maxWithdraw(
-      "0x0D50AB2b552A2D2e6cdaFd367e6e78f392A2f06F"
-    );
+    const maxWithdraw = await vaultContract.maxWithdraw(currentAccount);
     const result = parseInt(maxWithdraw._hex, 16);
     setCurrentBalance(result / unitsInACent);
     console.log(result);
@@ -164,9 +134,9 @@ function App() {
       });
 
       if (wasAdded) {
-        console.log("Thanks for your interest!");
+        console.log("cBRLC token was added!");
       } else {
-        console.log("Your loss!");
+        console.log("We couldn't add cBRLC to your MetaMask!");
       }
     } catch (error) {
       console.log(error);
@@ -175,13 +145,12 @@ function App() {
 
   return (
     <div className="App">
-      <div>Meu balanço atual é: {currentBalance} centavos</div>
       <div className="App-header">
+        <div>Meu balanço atual é: {currentBalance} centavos</div>
+        <div>Minha conta é: {currentAccount}</div>
         <button onClick={getMaxWithdrawValue}>Ver saldo</button>
         <button onClick={onClickConnect}>Conectar</button>
-        <button onClick={doNothingAndAddToken}>
-          Adicionar cToken a MetaMask
-        </button>
+        <button onClick={addCToken}>Adicionar cToken a MetaMask</button>
         <button onClick={makeADeposit}>Depositar</button>
         <button onClick={makeAWithdraw}>Sacar Tudo</button>
         <input
