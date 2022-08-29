@@ -6,8 +6,9 @@ import Greeter from "./artifacts/contracts/Greeter.sol/Greeter.json";
 import ABI from "./artifacts/contracts/brlcABI.json";
 import "./App.css";
 
-const greeterAddress = "0xed578BAd241455C0d57419659a3a6Eb9c770cC8d";
-const brlcContractAddress = "0xC6d1eFd908ef6B69dA0749600F553923C465c812"; // Liquidity pool contract address
+// Contracts addresses
+const greeterAddress = "0xed578BAd241455C0d57419659a3a6Eb9c770cC8d"; // Liquidity pool contract address
+const brlcContractAddress = "0xC6d1eFd908ef6B69dA0749600F553923C465c812";
 
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
@@ -16,7 +17,7 @@ const vaultContract = new ethers.Contract(greeterAddress, Greeter.abi, signer);
 const BRLCcontract = new ethers.Contract(brlcContractAddress, ABI, signer);
 
 function App() {
-  const [message, setMessage] = useState("");
+  const [inputNumber, setInputNumber] = useState("");
   const [currentBalance, setCurrentBalance] = useState(0);
   const [currentAccount, setCurrentAccount] = useState("");
 
@@ -36,7 +37,7 @@ function App() {
       const res = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
-      setCurrentAccount(res[0]);
+      setCurrentAccount(res[0] || "Não foi capaz de obter as contas");
       console.log(currentAccount);
     } catch (error) {
       console.error(error);
@@ -56,13 +57,7 @@ function App() {
     // }
   };
 
-  // getAccountsButton.addEventListener("click", async () => {
-  //   const accounts = await ethereum.request({ method: "eth_accounts" });
-  //   getAccountsResult.innerHTML =
-  //     accounts[0] || "Não foi capaz de obter as contas";
-  // });
-
-  // MetaMaskClientCheck();
+  MetaMaskClientCheck();
 
   async function approveAllowance() {
     const myWallet = currentAccount;
@@ -73,8 +68,8 @@ function App() {
   }
 
   async function makeADeposit() {
-    if (!message) return;
-    const valueAssets = message * 10000;
+    if (!inputNumber) return;
+    const valueAssets = inputNumber * 10000;
     if (typeof window.ethereum !== "undefined") {
       await approveAllowance();
       try {
@@ -87,8 +82,8 @@ function App() {
   }
 
   async function makeAWithdraw() {
-    if (!message) return;
-    const valueAssets = message * 10000;
+    if (!inputNumber) return;
+    const valueAssets = inputNumber * 10000;
     if (typeof window.ethereum !== "undefined") {
       try {
         const data = await vaultContract.withdraw(
@@ -155,8 +150,8 @@ function App() {
         <button onClick={makeAWithdraw}>Sacar Tudo</button>
         <input
           type="number"
-          onChange={(e) => setMessage(e.target.value)}
-          value={message}
+          onChange={(e) => setInputNumber(e.target.value)}
+          value={inputNumber}
           placeholder="Digite quantos centavos"
         ></input>
       </div>
