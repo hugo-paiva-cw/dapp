@@ -7,13 +7,13 @@ import ABI from "./artifacts/contracts/brlcABI.json";
 import "./App.css";
 
 // Contracts addresses
-const greeterAddress = "0xed578BAd241455C0d57419659a3a6Eb9c770cC8d"; // Liquidity pool contract address
+const vaultAddress = "0xed578BAd241455C0d57419659a3a6Eb9c770cC8d"; // Liquidity pool contract address
 const brlcContractAddress = "0xC6d1eFd908ef6B69dA0749600F553923C465c812";
 
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
 
-const vaultContract = new ethers.Contract(greeterAddress, Greeter.abi, signer);
+const vaultContract = new ethers.Contract(vaultAddress, Greeter.abi, signer);
 const BRLCcontract = new ethers.Contract(brlcContractAddress, ABI, signer);
 
 function App() {
@@ -102,16 +102,22 @@ function App() {
     const unitsInACent = 10000;
     const maxWithdraw = await vaultContract.maxWithdraw(currentAccount);
     const result = parseInt(maxWithdraw._hex, 16);
-    setCurrentBalance(result / unitsInACent);
-    console.log(result);
-    return result;
+    const resultInCents = result / unitsInACent;
+    const resulInReal = resultInCents / 100;
+    const maskedNumber = new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(resulInReal);
+    setCurrentBalance(maskedNumber);
+    console.log(maskedNumber);
+    return maskedNumber;
   }
 
   async function addCToken() {
-    const tokenAddress = greeterAddress;
+    const tokenAddress = vaultAddress;
     const tokenSymbol = "cBRLC";
     const tokenDecimals = 6;
-    const tokenImage = "http://placekitten.com/200/300";
+    const tokenImage = "https://nft.infinitepay.io/images/frame-brlc.svg";
 
     try {
       // wasAdded is a boolean. Like any RPC method, an error may be thrown.
@@ -141,7 +147,7 @@ function App() {
   return (
     <div className="App">
       <div className="App-header">
-        <div>Meu balanço atual é: {currentBalance} centavos</div>
+        <div>Meu balanço atual é: {currentBalance}</div>
         <div>Minha conta é: {currentAccount}</div>
         <button onClick={getMaxWithdrawValue}>Ver saldo</button>
         <button onClick={onClickConnect}>Conectar</button>
