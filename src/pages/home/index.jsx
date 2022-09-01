@@ -36,7 +36,7 @@ function Home() {
       <BalanceView>{currentBalance}</BalanceView>
       <Input
         value={inputNumber}
-        label="Insira o valor da transferência (em centavos)"
+        label="Insira o valor da transferência"
         onInput={(e) => setInputNumber(e.target.value)}
       ></Input>
       <Placeholder>

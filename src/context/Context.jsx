@@ -10,8 +10,8 @@ export const Context = createContext({});
 
 export const Provider = (props) => {
   // Contracts addresses
-  const greeterAddress = "0xed578BAd241455C0d57419659a3a6Eb9c770cC8d"; // Liquidity pool contract address
-  const brlcContractAddress = "0xC6d1eFd908ef6B69dA0749600F553923C465c812";
+  const greeterAddress = "0x1F9E41691fa8aC1EE8DA7398749d94CF871980e0"; // Liquidity pool contract address
+  const brlcContractAddress = "0xA9a55a81a4C085EC0C31585Aed4cFB09D78dfD53";
 
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
@@ -32,12 +32,6 @@ export const Provider = (props) => {
     return Boolean(ethereum && ethereum.isMetaMask);
   };
 
-  // const onboarding = new MetaMaskOnboarding({ forwarderOrigin });
-
-  // const onClickInstall = () => {
-  //   onboarding.startOnboarding();
-  // };
-
   async function onClickConnect() {
     try {
       const res = await window.ethereum.request({
@@ -49,19 +43,6 @@ export const Provider = (props) => {
       console.error(error);
     }
   }
-
-  const MetaMaskClientCheck = () => {
-    // if (!isMetaMaskInstalled()) {
-    //   onboardButton.innerText = "Clique aqui para instalar MetaMask!";
-    //   onboardButton.onclick = onClickInstall;
-    //   onboardButton.disabled = true;
-    // } else {
-    //   onboardButton.innerText = "Conectar";
-    //   onboardButton.onclick = onClickConnect;
-    //   onboardButton.disabled = false;
-    //   depositButton.disabled = false;
-    // }
-  };
 
 async function makeAWithdraw() {
   if (!inputNumber) return;
@@ -82,7 +63,7 @@ async function makeAWithdraw() {
 
 async function getMaxWithdrawValue() {
   const unitsInACent = 10000;
-  const maxWithdraw = await vaultContract.maxWithdraw(currentAccount);
+  const maxWithdraw = await vaultContract.getMyBalance(currentAccount);
   const result = parseInt(maxWithdraw._hex, 16);
   setCurrentBalance(result / unitsInACent);
   console.log(result);
@@ -90,10 +71,8 @@ async function getMaxWithdrawValue() {
 }
 
   async function approveAllowance(valueAssets) {
-    const myWallet = currentAccount;
-    const lpAddress = "0xed578BAd241455C0d57419659a3a6Eb9c770cC8d";
-    await BRLCcontract.approve(lpAddress, valueAssets);
-    const balance = await BRLCcontract.allowance(myWallet, lpAddress);
+    await BRLCcontract.approve(greeterAddress, valueAssets);
+    const balance = await BRLCcontract.allowance(currentAccount, greeterAddress);
     console.log(parseInt(balance._hex, 16));
   }
 
@@ -132,16 +111,22 @@ async function getMaxWithdrawValue() {
     const unitsInACent = 10000;
     const maxWithdraw = await vaultContract.maxWithdraw(currentAccount);
     const result = parseInt(maxWithdraw._hex, 16);
-    setCurrentBalance(result / unitsInACent);
-    console.log(result);
-    return result;
+    const resultInCents = result / unitsInACent;
+    const resulInReal = resultInCents / 100;
+    const maskedNumber = new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(resulInReal);
+    setCurrentBalance(maskedNumber);
+    console.log(maskedNumber);
+    return maskedNumber;
   }
 
   async function addCToken() {
     const tokenAddress = greeterAddress;
     const tokenSymbol = "cBRLC";
     const tokenDecimals = 6;
-    const tokenImage = "http://placekitten.com/200/300";
+    const tokenImage = "https://nft.infinitepay.io/images/frame-brlc.svg";
 
     try {
       // wasAdded is a boolean. Like any RPC method, an error may be thrown.
@@ -175,7 +160,6 @@ async function getMaxWithdrawValue() {
       value={{
         navigate,
         onClickConnect,
-        MetaMaskClientCheck,
         makeADeposit,
         makeAWithdraw,
         getMaxWithdrawValue,
