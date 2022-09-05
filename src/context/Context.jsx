@@ -61,14 +61,14 @@ async function makeAWithdraw() {
   }
 }
 
-async function getMaxWithdrawValue() {
-  const unitsInACent = 10000;
-  const maxWithdraw = await vaultContract.getMyBalance(currentAccount);
-  const result = parseInt(maxWithdraw._hex, 16);
-  setCurrentBalance(result / unitsInACent);
-  console.log(result);
-  return result;
-}
+// async function getMaxWithdrawValue() {
+//   const unitsInACent = 10000;
+//   const maxWithdraw = await vaultContract.getMyBalance(currentAccount);
+//   const result = parseInt(maxWithdraw._hex, 16);
+//   setCurrentBalance(result / unitsInACent);
+//   console.log(result);
+//   return result;
+// }
 
   async function approveAllowance(valueAssets) {
     await BRLCcontract.approve(greeterAddress, valueAssets);
@@ -90,26 +90,29 @@ async function getMaxWithdrawValue() {
     }
   }
 
-  async function makeAWithdraw() {
-    if (!inputNumber) return;
-    const valueAssets = inputNumber * 10000;
-    if (typeof window.ethereum !== "undefined") {
-      try {
-        const data = await vaultContract.withdraw(
-          valueAssets,
-          currentAccount,
-          currentAccount
-        );
-        console.log("data: ", data);
-      } catch (error) {
-        console.log("Error: ", error);
-      }
-    }
-  }
+  // async function makeAWithdraw() {
+  //   if (!inputNumber) return;
+  //   const valueAssets = inputNumber * 10000;
+  //   if (typeof window.ethereum !== "undefined") {
+  //     try {
+  //       const data = await vaultContract.withdraw(
+  //         valueAssets,
+  //         currentAccount,
+  //         currentAccount
+  //       );
+  //       console.log("data: ", data);
+  //     } catch (error) {
+  //       console.log("Error: ", error);
+  //     }
+  //   }
+  // }
 
   async function getMaxWithdrawValue() {
     const unitsInACent = 10000;
+    const oldOne = await vaultContract.getMyBalance(currentAccount);
+    console.log(oldOne);
     const maxWithdraw = await vaultContract.maxWithdraw(currentAccount);
+    console.log(`O saldo é ${maxWithdraw}`);
     const result = parseInt(maxWithdraw._hex, 16);
     const resultInCents = result / unitsInACent;
     const resulInReal = resultInCents / 100;
