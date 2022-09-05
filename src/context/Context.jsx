@@ -45,6 +45,7 @@ export const Provider = (props) => {
   }
 
 async function makeAWithdraw() {
+  console.log('foi clicado');
   if (!inputNumber) return;
   const valueAssets = inputNumber * 10000;
   if (typeof window.ethereum !== "undefined") {
@@ -60,6 +61,27 @@ async function makeAWithdraw() {
     }
   }
 }
+
+const addNetwork = async () => {
+  await window.ethereum.request({
+    method: 'wallet_addEthereumChain',
+    params: [
+      {
+        chainId: chainId,
+        chainName: networkName,
+        rpcUrls: 'https://rpc.services.mainnet.cloudwalk.io',
+        // blockExplorerUrls: ,
+        nativeCurrency: {
+          name: 'BRLC',
+          symbol: 'BRLC', // 2-6 characters long
+          decimals: 6,
+        },
+      },
+    ],
+  });
+  // refresh
+  window.location.reload();
+};
 
 // async function getMaxWithdrawValue() {
 //   const unitsInACent = 10000;
@@ -77,6 +99,7 @@ async function makeAWithdraw() {
   }
 
   async function makeADeposit() {
+    console.log('depo')
     if (!inputNumber) return;
     const valueAssets = inputNumber * 10000;
     if (typeof window.ethereum !== "undefined") {
@@ -175,6 +198,7 @@ async function makeAWithdraw() {
         setCurrentBalance,
         currentAccount,
         setCurrentAccount,
+        addNetwork,
       }}
     >
       {props.children}
