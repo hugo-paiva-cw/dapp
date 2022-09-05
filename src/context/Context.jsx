@@ -62,19 +62,18 @@ async function makeAWithdraw() {
   }
 }
 
-const addNetwork = async () => {
+async function addNetwork() {
   await window.ethereum.request({
     method: 'wallet_addEthereumChain',
     params: [
       {
-        chainId: chainId,
-        chainName: networkName,
-        rpcUrls: 'https://rpc.services.mainnet.cloudwalk.io',
-        // blockExplorerUrls: ,
+        chainId: '0x7D9',
+        chainName: 'CloudWalk',
+        rpcUrls: ['https://rpc.services.mainnet.cloudwalk.io'],
         nativeCurrency: {
-          name: 'BRLC',
-          symbol: 'BRLC', // 2-6 characters long
-          decimals: 6,
+          name: 'CWN',
+          symbol: 'CWN',
+          decimals: 18,
         },
       },
     ],

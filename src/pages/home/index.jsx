@@ -24,6 +24,7 @@ function Home() {
     addCToken,
     isMetaMaskInstalled,
     getMaxWithdrawValue,
+    addNetwork,
   } = useContext(Context);
   return (
     <>
