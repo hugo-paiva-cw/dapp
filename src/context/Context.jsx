@@ -65,21 +65,38 @@ async function makeAWithdraw() {
 }
 
 async function addNetwork() {
-  await window.ethereum.request({
-    method: 'wallet_addEthereumChain',
-    params: [
-      {
-        chainId: '0x7D9',
-        chainName: 'CloudWalk',
-        rpcUrls: ['https://rpc.services.mainnet.cloudwalk.io'],
-        nativeCurrency: {
-          name: 'CWN',
-          symbol: 'CWN',
-          decimals: 18,
-        },
-      },
-    ],
-  });
+  try {
+    window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: '0x7D9'}]
+    })
+    
+  } catch (switchError) {
+    if (switchError === 4902) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: '0x7D9',
+              chainName: 'CloudWalk',
+              rpcUrls: ['https://rpc.services.mainnet.cloudwalk.io'],
+              blockExplorerUrls: ['https://explorer.mainnet.cloudwalk.io/blocks'],
+              // TODO not working icons
+              // iconUrls: ['https://avatars.githubusercontent.com/u/6581007?s=200&v=4', 'https://s3-eu-west-1.amazonaws.com/dealroom-images/3b/MTAwOjEwMDpjb21wYW55QHMzLWV1LXdlc3QtMS5hbWF6b25hd3MuY29tL2RlYWxyb29tLWltYWdlcy8yMDIyLzA3LzE5LzI4MDU4MjQ2NWJjMTc5MGUyNWZmYWM5MzQ2OWEzMmNk.png'],
+              nativeCurrency: {
+                name: 'CWN',
+                symbol: 'CWN',
+                decimals: 18,
+              },
+            },
+          ],
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
   // refresh
   window.location.reload();
 };
