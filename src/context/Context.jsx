@@ -3,22 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
 // This imports our ABIs we'll use to interact with the contract
-import Greeter from "../artifacts/contracts/Greeter.sol/Greeter.json";
+import Vault from "../artifacts/contracts/Vault.sol/Vault.json";
 import ABI from "../artifacts/contracts/BRLC_ABI.json";
 
 export const Context = createContext({});
 
 export const Provider = (props) => {
   // Contracts addresses
-  const greeterAddress = "0x1F9E41691fa8aC1EE8DA7398749d94CF871980e0"; // Liquidity pool contract address
+  const vaultAddress = "0x1F9E41691fa8aC1EE8DA7398749d94CF871980e0"; // Liquidity pool contract address
   const brlcContractAddress = "0xA9a55a81a4C085EC0C31585Aed4cFB09D78dfD53";
 
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
 
   const vaultContract = new ethers.Contract(
-    greeterAddress,
-    Greeter.abi,
+    vaultAddress,
+    Vault.abi,
     signer
   );
   const BRLCcontract = new ethers.Contract(brlcContractAddress, ABI, signer);
@@ -45,8 +45,10 @@ export const Provider = (props) => {
   }
 
 async function makeAWithdraw() {
-  console.log('foi clicado');
-  if (!inputNumber) return;
+  if (!inputNumber) {
+    console.log('Error! No amount of tokens was specified for this transaction! Please specify a value.');
+    return;
+  }
   const valueAssets = inputNumber * 10000;
   if (typeof window.ethereum !== "undefined") {
     try {
@@ -82,24 +84,17 @@ async function addNetwork() {
   window.location.reload();
 };
 
-// async function getMaxWithdrawValue() {
-//   const unitsInACent = 10000;
-//   const maxWithdraw = await vaultContract.getMyBalance(currentAccount);
-//   const result = parseInt(maxWithdraw._hex, 16);
-//   setCurrentBalance(result / unitsInACent);
-//   console.log(result);
-//   return result;
-// }
-
   async function approveAllowance(valueAssets) {
-    await BRLCcontract.approve(greeterAddress, valueAssets);
-    const balance = await BRLCcontract.allowance(currentAccount, greeterAddress);
+    await BRLCcontract.approve(vaultAddress, valueAssets);
+    const balance = await BRLCcontract.allowance(currentAccount, vaultAddress);
     console.log(parseInt(balance._hex, 16));
   }
 
   async function makeADeposit() {
-    console.log('depo')
-    if (!inputNumber) return;
+  if (!inputNumber) {
+    console.log('Error! No amount of tokens was specified for this transaction! Please specify a value.');
+    return;
+  }
     const valueAssets = inputNumber * 10000;
     if (typeof window.ethereum !== "undefined") {
       await approveAllowance(valueAssets);
@@ -111,23 +106,6 @@ async function addNetwork() {
       }
     }
   }
-
-  // async function makeAWithdraw() {
-  //   if (!inputNumber) return;
-  //   const valueAssets = inputNumber * 10000;
-  //   if (typeof window.ethereum !== "undefined") {
-  //     try {
-  //       const data = await vaultContract.withdraw(
-  //         valueAssets,
-  //         currentAccount,
-  //         currentAccount
-  //       );
-  //       console.log("data: ", data);
-  //     } catch (error) {
-  //       console.log("Error: ", error);
-  //     }
-  //   }
-  // }
 
   async function getMaxWithdrawValue() {
     const unitsInACent = 10000;
@@ -148,7 +126,7 @@ async function addNetwork() {
   }
 
   async function addCToken() {
-    const tokenAddress = greeterAddress;
+    const tokenAddress = vaultAddress;
     const tokenSymbol = "cBRLC";
     const tokenDecimals = 6;
     const tokenImage = "https://nft.infinitepay.io/images/frame-brlc.svg";
