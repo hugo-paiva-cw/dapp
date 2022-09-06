@@ -66,40 +66,46 @@ async function makeAWithdraw() {
 
 async function addNetwork() {
   try {
-    window.ethereum.request({
+    await window.ethereum.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: '0x7D9'}]
     })
-    
+    onClickConnect();
   } catch (switchError) {
-    if (switchError === 4902) {
+    if (switchError.code === 4902) {
       try {
-        await window.ethereum.request({
-          method: 'wallet_addEthereumChain',
-          params: [
-            {
-              chainId: '0x7D9',
-              chainName: 'CloudWalk',
-              rpcUrls: ['https://rpc.services.mainnet.cloudwalk.io'],
-              blockExplorerUrls: ['https://explorer.mainnet.cloudwalk.io/blocks'],
-              // TODO not working icons
-              // iconUrls: ['https://avatars.githubusercontent.com/u/6581007?s=200&v=4', 'https://s3-eu-west-1.amazonaws.com/dealroom-images/3b/MTAwOjEwMDpjb21wYW55QHMzLWV1LXdlc3QtMS5hbWF6b25hd3MuY29tL2RlYWxyb29tLWltYWdlcy8yMDIyLzA3LzE5LzI4MDU4MjQ2NWJjMTc5MGUyNWZmYWM5MzQ2OWEzMmNk.png'],
-              nativeCurrency: {
-                name: 'CWN',
-                symbol: 'CWN',
-                decimals: 18,
-              },
-            },
-          ],
-        });
+        await addNewNetwork();
+        await addBrlcToken();
+        await addCToken();
       } catch (error) {
         console.error(error);
       }
     }
   }
   // refresh
-  window.location.reload();
+  // window.location.reload();
 };
+
+async function addNewNetwork() {
+  await window.ethereum.request({
+    method: 'wallet_addEthereumChain',
+    params: [
+      {
+        chainId: '0x7D9',
+        chainName: 'CloudWalk',
+        rpcUrls: ['https://rpc.services.mainnet.cloudwalk.io'],
+        blockExplorerUrls: ['https://explorer.mainnet.cloudwalk.io/blocks'],
+        // TODO not working icons
+        iconUrls: ['https://avatars.githubusercontent.com/u/6581007?s=200&v=4', 'https://s3-eu-west-1.amazonaws.com/dealroom-images/3b/MTAwOjEwMDpjb21wYW55QHMzLWV1LXdlc3QtMS5hbWF6b25hd3MuY29tL2RlYWxyb29tLWltYWdlcy8yMDIyLzA3LzE5LzI4MDU4MjQ2NWJjMTc5MGUyNWZmYWM5MzQ2OWEzMmNk.png'],
+        nativeCurrency: {
+          name: 'CWN',
+          symbol: 'CWN',
+          decimals: 18,
+        },
+      },
+    ],
+  });
+}
 
   async function approveAllowance(valueAssets) {
     await BRLCcontract.approve(vaultAddress, valueAssets);
@@ -167,6 +173,37 @@ async function addNetwork() {
         console.log("cBRLC token was added!");
       } else {
         console.log("We couldn't add cBRLC to your MetaMask!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function addBrlcToken() {
+    const tokenAddress = brlcContractAddress;
+    const tokenSymbol = "BRLC";
+    const tokenDecimals = 6;
+    const tokenImage = "https://nft.infinitepay.io/images/frame-brlc.svg";
+
+    try {
+      // wasAdded is a boolean. Like any RPC method, an error may be thrown.
+      const wasAdded = await window.ethereum.request({
+        method: "wallet_watchAsset",
+        params: {
+          type: "ERC20",
+          options: {
+            address: tokenAddress, // The address that the token is at.
+            symbol: tokenSymbol, // A ticker symbol or shorthand, up to 5 chars.
+            decimals: tokenDecimals, // The number of decimals in the token
+            image: tokenImage, // A string url of the token logo
+          },
+        },
+      });
+
+      if (wasAdded) {
+        console.log("BRLC token was added!");
+      } else {
+        console.log("We couldn't add BRLC to your MetaMask!");
       }
     } catch (error) {
       console.log(error);
