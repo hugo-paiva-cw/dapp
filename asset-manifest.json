@@ -1,11 +1,11 @@
 {
   "files": {
-    "main.js": "/dapp/static/js/main.0356501c.js",
+    "main.js": "/dapp/static/js/main.bbf5afbd.js",
     "static/media/logo.png": "/dapp/static/media/logo.19996eab75c176c00d7c.png",
     "index.html": "/dapp/index.html",
-    "main.0356501c.js.map": "/dapp/static/js/main.0356501c.js.map"
+    "main.bbf5afbd.js.map": "/dapp/static/js/main.bbf5afbd.js.map"
   },
   "entrypoints": [
-    "static/js/main.0356501c.js"
+    "static/js/main.bbf5afbd.js"
   ]
 }
