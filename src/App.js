@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 
 // This imports our ABIs we'll use to interact with the contract
 import Greeter from "./artifacts/contracts/Greeter.sol/Greeter.json";
-import ABI from "./artifacts/contracts/brlcABI.json";
+import ABI from "./artifacts/contracts/BRLC_ABI.json";
 import "./App.css";
 
 // Contracts addresses
