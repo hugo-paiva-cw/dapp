@@ -26,6 +26,7 @@ export const Provider = (props) => {
   const [inputNumber, setInputNumber] = useState("");
   const [currentBalance, setCurrentBalance] = useState(0);
   const [currentAccount, setCurrentAccount] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const isMetaMaskInstalled = () => {
     const { ethereum } = window;
@@ -46,6 +47,7 @@ export const Provider = (props) => {
 
 async function makeAWithdraw() {
   if (!inputNumber) {
+    setErrorMessage("Por favor insira um valor");
     console.log('Error! No amount of tokens was specified for this transaction! Please specify a value.');
     return;
   }
@@ -62,6 +64,7 @@ async function makeAWithdraw() {
       console.log("Error: ", error);
     }
   }
+  setErrorMessage = "";
 }
 
 async function addNetwork() {
@@ -115,6 +118,7 @@ async function addNewNetwork() {
 
   async function makeADeposit() {
   if (!inputNumber) {
+    setErrorMessage("Por favor insira um valor");
     console.log('Error! No amount of tokens was specified for this transaction! Please specify a value.');
     return;
   }
@@ -128,6 +132,7 @@ async function addNewNetwork() {
         console.log("Error: ", error);
       }
     }
+    setErrorMessage = "";
   }
 
   async function getMaxWithdrawValue() {
@@ -230,6 +235,8 @@ async function addNewNetwork() {
         currentAccount,
         setCurrentAccount,
         addNetwork,
+        errorMessage,
+        setErrorMessage,
       }}
     >
       {props.children}

@@ -25,7 +25,10 @@ function Home() {
     isMetaMaskInstalled,
     getMaxWithdrawValue,
     addNetwork,
+    errorMessage,
+    setErrorMessage,
   } = useContext(Context);
+
   return (
     <>
       <Header onClick={() => navigate("/")}>
@@ -35,11 +38,12 @@ function Home() {
         </HeaderButton>
       </Header>
       <BalanceView>{currentBalance}</BalanceView>
-      <Input
-        value={inputNumber}
-        label="Insira o valor da transferência"
-        onInput={(e) => setInputNumber(e.target.value)}
-      ></Input>
+        <Input
+          value={inputNumber}
+          label="Insira o valor da transferência"
+          onInput={(e) => setInputNumber(e.target.value)}
+          error={errorMessage}
+        ></Input>
       <Placeholder>
         <Button value="Ver Saldo" onClick={getMaxWithdrawValue} />
         <Button value="Adicionar cToken" onClick={addCToken} />
