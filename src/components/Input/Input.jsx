@@ -6,6 +6,7 @@ function Input(props) {
     <S.div>
       <S.label>{props.label}</S.label>
       <S.input value={props.value} onInput={props.onInput}/>
+      <S.span>{props.error}</S.span>
     </S.div>
   );
 }
