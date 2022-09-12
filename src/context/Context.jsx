@@ -29,10 +29,16 @@ export const Provider = (props) => {
 
   const isMetaMaskInstalled = () => {
     const { ethereum } = window;
-    return Boolean(ethereum && ethereum.isMetaMask);
+    const isInstalled = Boolean(ethereum && ethereum.isMetaMask);
+    if (!isInstalled) {
+      console.log('Please install the MetaMask extension! Then you can procede to use the app.')
+    }
+    return isInstalled;
   };
 
   async function onClickConnect() {
+    if (!isMetaMaskInstalled) return;
+
     try {
       const res = await window.ethereum.request({
         method: "eth_requestAccounts",
@@ -45,6 +51,8 @@ export const Provider = (props) => {
   }
 
 async function makeAWithdraw() {
+  if (!isMetaMaskInstalled) return;
+
   if (!inputNumber) {
     console.log('Error! No amount of tokens was specified for this transaction! Please specify a value.');
     return;
@@ -65,6 +73,8 @@ async function makeAWithdraw() {
 }
 
 async function addNetwork() {
+  if (!isMetaMaskInstalled) return;
+    
   try {
     await window.ethereum.request({
       method: 'wallet_switchEthereumChain',
@@ -75,8 +85,8 @@ async function addNetwork() {
     if (switchError.code === 4902) {
       try {
         await addNewNetwork();
-        await addBrlcToken();
-        await addCToken();
+        addBrlcToken();
+        addCToken();
       } catch (error) {
         console.error(error);
       }
@@ -87,6 +97,8 @@ async function addNetwork() {
 };
 
 async function addNewNetwork() {
+  if (!isMetaMaskInstalled) return;
+
   await window.ethereum.request({
     method: 'wallet_addEthereumChain',
     params: [
@@ -108,16 +120,20 @@ async function addNewNetwork() {
 }
 
   async function approveAllowance(valueAssets) {
+    if (!isMetaMaskInstalled) return;
+
     await BRLCcontract.approve(vaultAddress, valueAssets);
     const balance = await BRLCcontract.allowance(currentAccount, vaultAddress);
     console.log(parseInt(balance._hex, 16));
   }
 
   async function makeADeposit() {
-  if (!inputNumber) {
-    console.log('Error! No amount of tokens was specified for this transaction! Please specify a value.');
-    return;
-  }
+    if (!isMetaMaskInstalled) return;
+
+    if (!inputNumber) {
+      console.log('Error! No amount of tokens was specified for this transaction! Please specify a value.');
+      return;
+    }
     const valueAssets = inputNumber * 10000;
     if (typeof window.ethereum !== "undefined") {
       await approveAllowance(valueAssets);
@@ -131,6 +147,8 @@ async function addNewNetwork() {
   }
 
   async function getMaxWithdrawValue() {
+    if (!isMetaMaskInstalled) return;
+
     const unitsInACent = 10000;
     const oldOne = await vaultContract.getMyBalance(currentAccount);
     console.log(oldOne);
@@ -149,6 +167,9 @@ async function addNewNetwork() {
   }
 
   async function addCToken() {
+    if (!isMetaMaskInstalled) return;
+    addBrlcToken();
+
     const tokenAddress = vaultAddress;
     const tokenSymbol = "cBRLC";
     const tokenDecimals = 6;
@@ -180,6 +201,8 @@ async function addNewNetwork() {
   }
 
   async function addBrlcToken() {
+    if (!isMetaMaskInstalled) return;
+
     const tokenAddress = brlcContractAddress;
     const tokenSymbol = "BRLC";
     const tokenDecimals = 6;

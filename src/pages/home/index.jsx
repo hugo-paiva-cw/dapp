@@ -42,7 +42,7 @@ function Home() {
       ></Input>
       <Placeholder>
         <Button value="Ver Saldo" onClick={getMaxWithdrawValue} />
-        <Button value="Adicionar cToken" onClick={addCToken} />
+        <Button value="Adicionar tokens" onClick={addCToken} />
         <Button value="Depositar" onClick={makeADeposit} />
         <Button value="Sacar" onClick={makeAWithdraw} />
         <Button value="Conectar Network" onClick={addNetwork} />
