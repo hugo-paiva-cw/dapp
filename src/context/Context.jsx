@@ -134,8 +134,14 @@ async function addNewNetwork() {
     if (!isMetaMaskInstalled) return;
 
     if (!inputNumber) {
-    setErrorMessage("Por favor insira um valor");
+      setErrorMessage("Por favor insira um valor");
       console.log('Error! No amount of tokens was specified for this transaction! Please specify a value.');
+      return;
+    }
+    const tenBrlcLimit = 1000;
+    if (inputNumber > tenBrlcLimit) {
+      setErrorMessage(`Você tentou depositar apróx BRLC ${inputNumber/100}. Por enquanto apenas depósitos até 10 reais estão disponíveis!`);
+      console.log(`Error! You tried to deposit R$ ${inputNumber/100}! Please deposit a value less the 10 BRLC.`);
       return;
     }
     const valueAssets = inputNumber * 10000;
