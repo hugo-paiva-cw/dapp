@@ -45,7 +45,7 @@ function Home() {
           <GiFoxHead size={38} />
         </HeaderButton>
           <Legenda />
-          <BalanceView>{currentBalance},00</BalanceView>
+          <BalanceView>{currentBalance}</BalanceView>
           <LegendaButton>
             Operações secundarias
           </LegendaButton>
