@@ -50,7 +50,7 @@ function Home() {
             Operações secundarias
           </LegendaButton>
           <Functions>
-            <Button onClick={addCToken}>Adicionar cToken </Button>
+            <Button onClick={addCToken}>Cadastrar Tokens</Button>
             <Button onClick={addNetwork}>Conectar Network </Button>
             <Button onClick={getMaxWithdrawValue}>Ver Saldo</Button>
           </Functions>
