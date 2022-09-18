@@ -1,12 +1,13 @@
 import React from "react";
 import * as S from "./style";
+import brlc from "../../images/brlc.svg"
 
 
 function BalanceView(props) {
   return (
-    <S.div>
-      <S.balanceView>{props.children}</S.balanceView>
-    </S.div>
+      <S.balanceView>
+      <S.brlc src={brlc}/>   {props.children}
+      </S.balanceView>
   );
 }
 

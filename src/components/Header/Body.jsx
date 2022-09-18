@@ -4,18 +4,13 @@ import logo from "../../images/logo.png"
 import { Context } from "../../context/Context.jsx";
 import { useContext } from "react";
 
-function Header(props) {
+function Body(props) {
   let { navigate } = useContext(Context);
   return (
-    <S.header>
-      <S.h1>
-        Investimento
-      </S.h1>
-      {/* <S.logo src={logo} onClick={props.onClick}/> */}
+    <S.body>
       {props.children}
-
-    </S.header>
+    </S.body>
   );
 }
 
-export default Header;
+export default Body;

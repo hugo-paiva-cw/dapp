@@ -4,8 +4,8 @@ import * as S from "./style"
 function SimpleButton(props) {
   return (
 
-    <S.simpleButton type="button" value={props.value} onClick={props.onClick}>
-
+    <S.simpleButton onClick={props.onClick}>
+       {props.children}
     </S.simpleButton>
 
   );

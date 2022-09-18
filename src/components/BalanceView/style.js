@@ -1,21 +1,24 @@
 import Styled from "styled-components";
 
-export const balanceView = Styled.div`
-
-height: 20vh;
-width: 50%;
-border: 0.1rem solid black;
-display:flex;
-justify-content: center;
+export const balanceView = Styled.h2`
+font-family: 'Roboto', sans-serif;
+color: #000000;
+margin-bottom: 320px;
+margin-top:0;
+font-weight: 500;
+font-size:2em;
+display: flex;
 align-items: center;
-color: blue;
-font-size:5em;
 `
 
-export const div = Styled.div`
-width:100vw;
-display:flex;
-justify-content: center;
-align-items: center;
-margin-top: 1rem;
-`;
+export const legenda = Styled.p`
+font-family: 'Roboto', sans-serif;
+font-weight: 400;
+color: #616161;
+margin-bottom: 10px;
+`
+
+export const brlc = Styled.img`
+width: 30px;
+margin-right: 5px;
+`
