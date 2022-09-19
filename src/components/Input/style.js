@@ -40,3 +40,15 @@ export const label = Styled.label`
 
 `;
 
+export const span = Styled.span`
+
+    width: 100%;
+    font-size: 1.5rem;
+    color: red;
+    text-align: center;
+    //border: 1px solid red;
+    margin-bottom: 1.2rem;
+
+`;
+
+

@@ -34,6 +34,8 @@ function Home() {
     isMetaMaskInstalled,
     getMaxWithdrawValue,
     addNetwork,
+    errorMessage,
+    setErrorMessage,
   } = useContext(Context);
 
   return (
@@ -61,7 +63,11 @@ function Home() {
           <Input
             value={inputNumber}
             label="Insira o valor da transferência"
-            onInput={(e) => setInputNumber(e.target.value)}
+            onInput={(e) => {
+              setInputNumber(e.target.value);
+              setErrorMessage('');
+            }}
+            error={errorMessage}
           ></Input>
           <Alert />
           <Placeholder>
