@@ -9,9 +9,9 @@ export const headerButton = Styled.div`
     gap:20px;
 `;
 
-export const title = Styled.h2`
-
-    color: white;
+export const title = Styled.h3`
+font-family: 'Roboto', sans-serif;
+    color: black;
     border-bottom: 1px solid white;
     width:fit-content;
 

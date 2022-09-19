@@ -13,6 +13,19 @@ export const header = Styled.header`
     font-weight: bold;
 `;
 
+export const top = Styled.header`
+    width: 95%;
+    position: absolute;
+    height: 9vh;
+    background-color: white;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    display: flex;
+    justify-content: space-between;
+    padding-right: 40px;
+    padding-left: 40px;
+    align-items: center;
+`   
+
 export const alert = styled.div`
     font-family: 'Roboto', sans-serif;
     display: flex;
@@ -45,6 +58,12 @@ export const contente = Styled.header`
 export const logo = Styled.img`
     margin-right: 15px;
     margin-left: 10px;
+
+`;
+
+export const logoHeader = Styled.img`
+    width: 100px;
+    height: 25px;
 
 `;
 

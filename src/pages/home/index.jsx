@@ -1,4 +1,5 @@
 import Header from "../../components/Header/Header";
+import Top from "../../components/Header/top";
 import Body from "../../components/Header/Body";
 import Alert from "../../components/Header/Alert";
 import Contente from "../../components/Header/Contente";
@@ -38,12 +39,13 @@ function Home() {
   return (
     <>
       <Contente>
-        <Header onClick={() => navigate("/")}>
+        <Top>
+        {currentAccount}
+        <HeaderButton title="Conecte-se" onClick={onClickConnect} />
 
-          {currentAccount}
-          <HeaderButton title="Conecte-se" onClick={onClickConnect}>
-          <GiFoxHead size={38} />
-        </HeaderButton>
+        </Top>
+        <Header onClick={() => navigate("/")}>
+          
           <Legenda />
           <BalanceView>{currentBalance}</BalanceView>
           <LegendaButton>
