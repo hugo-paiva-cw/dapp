@@ -171,10 +171,11 @@ async function addNewNetwork() {
     const result = parseInt(maxWithdraw._hex, 16);
     const resultInCents = result / unitsInACent;
     const resulInReal = resultInCents / 100;
-    const maskedNumber = new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(resulInReal);
+    const maskedNumber = resulInReal;
+    // const maskedNumber = new Intl.NumberFormat("pt-BR", {
+    //   style: "currency",
+    //   currency: "BRL",
+    // }).format(resulInReal);
     setCurrentBalance(maskedNumber);
     console.log(maskedNumber);
     return maskedNumber;
