@@ -62,7 +62,7 @@ function Home() {
         <Body>
           <Input
             value={inputNumber}
-            label="Insira o valor da transferência"
+            label="Insira o valor da transferência (em centavos)"
             onInput={(e) => {
               setInputNumber(e.target.value);
               setErrorMessage('');

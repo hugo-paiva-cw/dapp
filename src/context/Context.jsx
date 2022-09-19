@@ -57,8 +57,8 @@ export const Provider = (props) => {
 async function makeAWithdraw() {
   if (!isMetaMaskInstalled) return;
 
-  if (!inputNumber) {
-    setErrorMessage("Por favor insira um valor");
+  if (!inputNumber || isNaN(inputNumber)) {
+    setErrorMessage("Por favor insira um valor válido!");
     console.log('Error! No amount of tokens was specified for this transaction! Please specify a value.');
     return;
   }
@@ -136,8 +136,8 @@ async function addNewNetwork() {
   async function makeADeposit() {
     if (!isMetaMaskInstalled) return;
 
-    if (!inputNumber) {
-      setErrorMessage("Por favor insira um valor");
+    if (!inputNumber || isNaN(inputNumber)) {
+      setErrorMessage("Por favor insira um valor válido!");
       console.log('Error! No amount of tokens was specified for this transaction! Please specify a value.');
       return;
     }
