@@ -26,6 +26,7 @@ export const Provider = (props) => {
   const [inputNumber, setInputNumber] = useState("");
   const [currentBalance, setCurrentBalance] = useState(0);
   const [currentAccount, setCurrentAccount] = useState("");
+  const url = 'https://metamask.io/download/';
 
   const isMetaMaskInstalled = () => {
     const { ethereum } = window;
