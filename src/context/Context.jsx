@@ -33,6 +33,9 @@ export const Provider = (props) => {
   };
 
   async function onClickConnect() {
+    if (!isMetaMaskInstalled()) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
     try {
       const res = await window.ethereum.request({
         method: "eth_requestAccounts",
