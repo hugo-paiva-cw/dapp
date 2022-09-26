@@ -5,6 +5,7 @@ export const headerButton = Styled.div`
     display: flex;
     align-items: center;
     height:5vh;
+    margin-right: 50px;
     width:fit-content;
     gap:20px;
 `;

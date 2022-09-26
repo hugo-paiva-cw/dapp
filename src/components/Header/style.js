@@ -14,15 +14,13 @@ export const header = Styled.header`
 `;
 
 export const top = Styled.header`
-    width: 95%;
+    width: 100vw;
     position: absolute;
     height: 9vh;
     background-color: white;
     box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     display: flex;
     justify-content: space-between;
-    padding-right: 40px;
-    padding-left: 40px;
     align-items: center;
 `   
 
@@ -33,7 +31,6 @@ export const alert = styled.div`
     background-color: #FFF5E5;
     width: 600px;
     font-weight: 300;
-    margin-left: 185px;
     margin-top:20px;
     border-radius: 10px;
 `
@@ -47,12 +44,15 @@ font-weight: 400;
 `
 
 export const body = Styled.body`
-    height: 100vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
     width: 70%;
 `;
 
 export const contente = Styled.header`
     display: flex;
+    w-full;
 `;
 
 export const logo = Styled.img`
@@ -64,13 +64,14 @@ export const logo = Styled.img`
 export const logoHeader = Styled.img`
     width: 100px;
     height: 25px;
+    margin-left: 40px;
 
 `;
 
 export const h1 = Styled.h1`
     font-family: 'Roboto', sans-serif;
     font-size: 48px;
-    margin-top: 80px;
+    margin-top: 130px;
     margin-bottom: 40px;
     line-height: 2.5rem;
     font-weight: 500;

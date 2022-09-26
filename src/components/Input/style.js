@@ -15,8 +15,7 @@ font-family: 'Roboto', sans-serif;
 `;
 
 export const div = Styled.div`
-
-font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -32,9 +31,7 @@ export const label = Styled.label`
 
     font-family: 'Roboto', sans-serif;
     margin-top: 200px;
-    margin-left: 370px;
     margin-bottom: 8px;
-    width: 100%;
     font-size: 1rem;
     //border: 1px solid red;
 
@@ -43,7 +40,11 @@ export const label = Styled.label`
 export const span = Styled.span`
 
     width: 100%;
-    font-size: 1.5rem;
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
     color: red;
     text-align: center;
     //border: 1px solid red;
@@ -52,3 +53,6 @@ export const span = Styled.span`
 `;
 
 
+export const logo = Styled.img`
+margin-right: 5px;
+`;

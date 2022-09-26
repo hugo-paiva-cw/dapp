@@ -8,9 +8,6 @@ function Top(props) {
   let { navigate } = useContext(Context);
   return (
     <S.top>
-      {/* <S.h1>
-        Investimento
-      </S.h1> */}
       <S.logoHeader src={infinitepay} onClick={props.onClick}/>
       {props.children}
 

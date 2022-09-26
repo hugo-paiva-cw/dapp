@@ -4,10 +4,10 @@ import Body from "../../components/Header/Body";
 import Alert from "../../components/Header/Alert";
 import Contente from "../../components/Header/Contente";
 import HeaderButton from "../../components/headerButton/headerButton";
-import { GiFoxHead } from "react-icons/gi";
+// import { GiFoxHead } from "react-icons/gi";
 import { Context } from "../../context/Context.jsx";
 import { useContext } from "react";
-import styled from "styled-components";
+// import styled from "styled-components";
 import Button from "../../components/SimpleButton/SimpleButton";
 import MainButton from "../../components/SimpleButton/mainButton";
 import LegendaButton from "../../components/SimpleButton/LegendaButton"
@@ -23,15 +23,15 @@ function Home() {
     inputNumber,
     setInputNumber,
     currentBalance,
-    setCurrentBalance,
+    // setCurrentBalance,
     currentAccount,
-    setCurrentAccount,
+    // setCurrentAccount,
     onClickConnect,
-    MetaMaskClientCheck,
+    // MetaMaskClientCheck,
     makeADeposit,
     makeAWithdraw,
     addCToken,
-    isMetaMaskInstalled,
+    // isMetaMaskInstalled,
     getMaxWithdrawValue,
     addNetwork,
     errorMessage,
