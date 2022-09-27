@@ -13,34 +13,46 @@ export const Provider = (props) => {
   const vaultAddress = "0x1F9E41691fa8aC1EE8DA7398749d94CF871980e0"; // Liquidity pool contract address
   const brlcContractAddress = "0xA9a55a81a4C085EC0C31585Aed4cFB09D78dfD53";
 
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-
-  const vaultContract = new ethers.Contract(
-    vaultAddress,
-    Vault.abi,
-    signer
-  );
-  const BRLCcontract = new ethers.Contract(brlcContractAddress, ABI, signer);
+  let provider;
+  let signer;
+  let vaultContract;
+  let BRLCcontract;
 
   const [inputNumber, setInputNumber] = useState("");
   const [currentBalance, setCurrentBalance] = useState(0);
   const [currentAccount, setCurrentAccount] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const url = 'https://metamask.io/download/';
+  const url = "https://metamask.io/download/";
 
   const isMetaMaskInstalled = () => {
     const { ethereum } = window;
     const isInstalled = Boolean(ethereum && ethereum.isMetaMask);
     if (!isInstalled) {
-      console.log('Please install the MetaMask extension! Then you can procede to use the app.')
+      console.log(
+        "Please install the MetaMask extension! Then you can procede to use the app."
+      );
+      setErrorMessage(
+        "Please install the MetaMask extension! Then you can procede to use the app."
+      );
     }
     return isInstalled;
   };
 
-  async function onClickConnect() {
+  async function lookForMetaMask() {
+    if (isMetaMaskInstalled) {
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+      signer = provider.getSigner();
+
+      vaultContract = new ethers.Contract(vaultAddress, Vault.abi, signer);
+      BRLCcontract = new ethers.Contract(brlcContractAddress, ABI, signer);
+    }
+  }
+
+  lookForMetaMask();
+
+  async function getWalletAddress() {
     if (!isMetaMaskInstalled()) {
-      window.open(url, '_blank', 'noopener,noreferrer');
+      window.open(url, "_blank", "noopener,noreferrer");
       return;
     }
     try {
@@ -54,76 +66,84 @@ export const Provider = (props) => {
     }
   }
 
-async function makeAWithdraw() {
-  if (!isMetaMaskInstalled) return;
+  async function makeAWithdraw() {
+    if (!isMetaMaskInstalled) return;
 
-  if (!inputNumber || isNaN(inputNumber)) {
-    setErrorMessage("Por favor insira um valor válido!");
-    console.log('Error! No amount of tokens was specified for this transaction! Please specify a value.');
-    return;
-  }
-  const valueAssets = inputNumber * 10000;
-  if (typeof window.ethereum !== "undefined") {
-    try {
-      const data = await vaultContract.withdraw(
-        valueAssets,
-        currentAccount,
-        currentAccount
+    if (!inputNumber || isNaN(inputNumber)) {
+      setErrorMessage("Por favor insira um valor válido!");
+      console.log(
+        "Error! No amount of tokens was specified for this transaction! Please specify a value."
       );
-      console.log("data: ", data);
-    } catch (error) {
-      console.log("Error: ", error);
+      return;
     }
-  }
-  setErrorMessage = "";
-}
-
-async function addNetwork() {
-  if (!isMetaMaskInstalled) return;
-    
-  try {
-    await window.ethereum.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: '0x7D9'}]
-    })
-    onClickConnect();
-  } catch (switchError) {
-    if (switchError.code === 4902) {
+    const valueAssets = inputNumber * 10000;
+    if (typeof window.ethereum !== "undefined") {
       try {
-        await addNewNetwork();
-        addBrlcToken();
-        addCToken();
+        const data = await vaultContract.withdraw(
+          valueAssets,
+          currentAccount,
+          currentAccount
+        );
+        console.log("data: ", data);
       } catch (error) {
-        console.error(error);
+        console.log("Error: ", error);
       }
     }
+    setErrorMessage = "";
   }
-  // refresh
-  // window.location.reload();
-};
 
-async function addNewNetwork() {
-  if (!isMetaMaskInstalled) return;
+  async function addNetwork() {
+    if (!isMetaMaskInstalled()) {
+      window.open(url, "_blank", "noopener,noreferrer");
+      return;
+    }
 
-  await window.ethereum.request({
-    method: 'wallet_addEthereumChain',
-    params: [
-      {
-        chainId: '0x7D9',
-        chainName: 'CloudWalk',
-        rpcUrls: ['https://rpc.services.mainnet.cloudwalk.io'],
-        blockExplorerUrls: ['https://explorer.mainnet.cloudwalk.io/blocks'],
-        // TODO not working icons
-        iconUrls: ['https://avatars.githubusercontent.com/u/6581007?s=200&v=4', 'https://s3-eu-west-1.amazonaws.com/dealroom-images/3b/MTAwOjEwMDpjb21wYW55QHMzLWV1LXdlc3QtMS5hbWF6b25hd3MuY29tL2RlYWxyb29tLWltYWdlcy8yMDIyLzA3LzE5LzI4MDU4MjQ2NWJjMTc5MGUyNWZmYWM5MzQ2OWEzMmNk.png'],
-        nativeCurrency: {
-          name: 'CWN',
-          symbol: 'CWN',
-          decimals: 18,
+    try {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x7D9" }],
+      });
+      getWalletAddress();
+    } catch (switchError) {
+      if (switchError.code === 4902) {
+        try {
+          await addNewNetwork();
+          addBrlcToken();
+          addCToken();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+    // refresh
+    // window.location.reload();
+  }
+
+  async function addNewNetwork() {
+    if (!isMetaMaskInstalled) return;
+
+    await window.ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [
+        {
+          chainId: "0x7D9",
+          chainName: "CloudWalk",
+          rpcUrls: ["https://rpc.services.mainnet.cloudwalk.io"],
+          blockExplorerUrls: ["https://explorer.mainnet.cloudwalk.io/blocks"],
+          // TODO not working icons
+          iconUrls: [
+            "https://avatars.githubusercontent.com/u/6581007?s=200&v=4",
+            "https://s3-eu-west-1.amazonaws.com/dealroom-images/3b/MTAwOjEwMDpjb21wYW55QHMzLWV1LXdlc3QtMS5hbWF6b25hd3MuY29tL2RlYWxyb29tLWltYWdlcy8yMDIyLzA3LzE5LzI4MDU4MjQ2NWJjMTc5MGUyNWZmYWM5MzQ2OWEzMmNk.png",
+          ],
+          nativeCurrency: {
+            name: "CWN",
+            symbol: "CWN",
+            decimals: 18,
+          },
         },
-      },
-    ],
-  });
-}
+      ],
+    });
+  }
 
   async function approveAllowance(valueAssets) {
     if (!isMetaMaskInstalled) return;
@@ -138,13 +158,23 @@ async function addNewNetwork() {
 
     if (!inputNumber || isNaN(inputNumber)) {
       setErrorMessage("Por favor insira um valor válido!");
-      console.log('Error! No amount of tokens was specified for this transaction! Please specify a value.');
+      console.log(
+        "Error! No amount of tokens was specified for this transaction! Please specify a value."
+      );
       return;
     }
     const tenBrlcLimit = 1000;
     if (inputNumber > tenBrlcLimit) {
-      setErrorMessage(`Você tentou depositar apróx BRLC ${inputNumber/100}. Por enquanto apenas depósitos até BRLC 10 estão disponíveis!`);
-      console.log(`Error! You tried to deposit R$ ${inputNumber/100}! Please deposit a value less the 10 BRLC.`);
+      setErrorMessage(
+        `Você tentou depositar apróx BRLC ${
+          inputNumber / 100
+        }. Por enquanto apenas depósitos até BRLC 10 estão disponíveis!`
+      );
+      console.log(
+        `Error! You tried to deposit R$ ${
+          inputNumber / 100
+        }! Please deposit a value less the 10 BRLC.`
+      );
       return;
     }
     const valueAssets = inputNumber * 10000;
@@ -254,7 +284,7 @@ async function addNewNetwork() {
     <Context.Provider
       value={{
         navigate,
-        onClickConnect,
+        getWalletAddress,
         makeADeposit,
         makeAWithdraw,
         getMaxWithdrawValue,
