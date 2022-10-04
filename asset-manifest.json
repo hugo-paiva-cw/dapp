@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "/dapp/static/js/main.ea408056.js",
+    "main.js": "/dapp/static/js/main.d2f0af7c.js",
     "static/media/logo.png": "/dapp/static/media/logo.19996eab75c176c00d7c.png",
     "static/media/brlc.svg": "/dapp/static/media/brlc.5170946aaa9b11e94b81bbbdd645310e.svg",
     "index.html": "/dapp/index.html",
     "static/media/informative.svg": "/dapp/static/media/informative.f0f0e376ca22f0f062e4c603b5c45ac1.svg",
-    "main.ea408056.js.map": "/dapp/static/js/main.ea408056.js.map"
+    "main.d2f0af7c.js.map": "/dapp/static/js/main.d2f0af7c.js.map"
   },
   "entrypoints": [
-    "static/js/main.ea408056.js"
+    "static/js/main.d2f0af7c.js"
   ]
 }
