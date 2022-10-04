@@ -68,15 +68,16 @@ export const Provider = (props) => {
 
   async function makeAWithdraw() {
     if (!isMetaMaskInstalled) return;
+    const currentNumber = inputNumber.replace(",", ".");
 
-    if (!inputNumber || isNaN(inputNumber)) {
+    if (!currentNumber || isNaN(currentNumber)) {
       setErrorMessage("Por favor insira um valor válido!");
       console.log(
         "Error! No amount of tokens was specified for this transaction! Please specify a value."
       );
       return;
     }
-    const valueAssets = inputNumber * 1000000;
+    const valueAssets = currentNumber * 1000000;
     if (typeof window.ethereum !== "undefined") {
       try {
         const data = await vaultContract.withdraw(
@@ -89,7 +90,7 @@ export const Provider = (props) => {
         console.log("Error: ", error);
       }
     }
-    setErrorMessage = "";
+    setErrorMessage("");
   }
 
   async function addNetwork() {
@@ -155,8 +156,9 @@ export const Provider = (props) => {
 
   async function makeADeposit() {
     if (!isMetaMaskInstalled) return;
+    const currentNumber = inputNumber.replace(",", ".");
 
-    if (!inputNumber || isNaN(inputNumber)) {
+    if (!currentNumber || isNaN(currentNumber)) {
       setErrorMessage("Por favor insira um valor válido!");
       console.log(
         "Error! No amount of tokens was specified for this transaction! Please specify a value."
@@ -164,20 +166,20 @@ export const Provider = (props) => {
       return;
     }
     const tenBrlcLimit = 1000;
-    if (inputNumber > tenBrlcLimit) {
+    if (currentNumber > tenBrlcLimit) {
       setErrorMessage(
         `Você tentou depositar apróx BRLC ${
-          inputNumber / 100
+          currentNumber / 100
         }. Por enquanto apenas depósitos até BRLC 10 estão disponíveis!`
       );
       console.log(
         `Error! You tried to deposit R$ ${
-          inputNumber / 100
+          currentNumber / 100
         }! Please deposit a value less the 10 BRLC.`
       );
       return;
     }
-    const valueAssets = inputNumber * 10000;
+    const valueAssets = currentNumber * 1000000;
     if (typeof window.ethereum !== "undefined") {
       await approveAllowance(valueAssets);
       try {
@@ -187,7 +189,7 @@ export const Provider = (props) => {
         console.log("Error: ", error);
       }
     }
-    setErrorMessage = "";
+    setErrorMessage("");
   }
 
   async function getMaxWithdrawValue() {

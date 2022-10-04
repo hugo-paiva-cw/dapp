@@ -48,19 +48,16 @@ function Home() {
         <Header onClick={() => navigate("/")}>
           <Legenda />
           <BalanceView>{currentBalance.toFixed(2)}</BalanceView>
-          <LegendaButton>
-            Operações secundarias
-          </LegendaButton>
+          <LegendaButton>Operações secundarias</LegendaButton>
           <Functions>
             <Button onClick={addCToken}>Cadastrar Tokens</Button>
-            {/* <Button onClick={addNetwork}>Conectar Network </Button> */}
             <Button onClick={getMaxWithdrawValue}>Ver Saldo</Button>
           </Functions>
         </Header>
         <Body>
           <Input
             value={inputNumber}
-            label="Insira o valor da transferência (em centavos)"
+            label="Insira o valor da transferência"
             onInput={(e) => {
               setInputNumber(e.target.value);
               setErrorMessage("");
