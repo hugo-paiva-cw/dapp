@@ -62,7 +62,7 @@ async function makeAWithdraw() {
     console.log('Error! No amount of tokens was specified for this transaction! Please specify a value.');
     return;
   }
-  const valueAssets = inputNumber * 10000;
+  const valueAssets = inputNumber * 100;
   if (typeof window.ethereum !== "undefined") {
     try {
       const data = await vaultContract.withdraw(

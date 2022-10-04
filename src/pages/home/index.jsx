@@ -49,7 +49,7 @@ function Home() {
         <Header onClick={() => navigate("/")}>
           
           <Legenda />
-          <BalanceView>{currentBalance}</BalanceView>
+          <BalanceView>{currentBalance.toFixed(2)}</BalanceView>
           <LegendaButton>
             Operações secundarias
           </LegendaButton>
