@@ -10,7 +10,7 @@ import { useContext } from "react";
 // import styled from "styled-components";
 import Button from "../../components/SimpleButton/SimpleButton";
 import MainButton from "../../components/SimpleButton/mainButton";
-import LegendaButton from "../../components/SimpleButton/LegendaButton"
+import LegendaButton from "../../components/SimpleButton/LegendaButton";
 import Functions from "../../components/SimpleButton/Functions";
 import Input from "../../components/Input/Input";
 import BalanceView from "../../components/BalanceView/BalanceView";
@@ -42,12 +42,10 @@ function Home() {
     <>
       <Contente>
         <Top>
-        {currentAccount}
-        <HeaderButton title="Conecte-se" onClick={onClickConnect} />
-
+          {currentAccount}
+          <HeaderButton title="Conecte-se" onClick={addNetwork} />
         </Top>
         <Header onClick={() => navigate("/")}>
-          
           <Legenda />
           <BalanceView>{currentBalance.toFixed(2)}</BalanceView>
           <LegendaButton>
@@ -55,7 +53,7 @@ function Home() {
           </LegendaButton>
           <Functions>
             <Button onClick={addCToken}>Cadastrar Tokens</Button>
-            <Button onClick={addNetwork}>Conectar Network </Button>
+            {/* <Button onClick={addNetwork}>Conectar Network </Button> */}
             <Button onClick={getMaxWithdrawValue}>Ver Saldo</Button>
           </Functions>
         </Header>
@@ -65,7 +63,7 @@ function Home() {
             label="Insira o valor da transferência (em centavos)"
             onInput={(e) => {
               setInputNumber(e.target.value);
-              setErrorMessage('');
+              setErrorMessage("");
             }}
             error={errorMessage}
           ></Input>
